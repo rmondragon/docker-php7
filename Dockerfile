@@ -1,11 +1,11 @@
-FROM ubuntu:14.04.4
+FROM ubuntu:14.04.5
 MAINTAINER Rolando Galindo <rmondragon@gmail.com>
 
 ENV DEBIAN_FRONTEND=noninteractive \
     APACHE_DOCUMENTROOT=/var/www/htdocs \
     APACHE_LOG_DIR=/logs \
     PHP_INI_DIR=/usr/local/etc/php \
-    PHP_FILENAME=php-7.0.10.tar.xz \
+    PHP_FILENAME=php-7.1.2.tar.xz \
     TERM=xterm
 
 #dependencies
@@ -74,6 +74,8 @@ RUN apt-get update && apt-get install -y \
     libmagickcore5-extra \
     libmagickwand-dev \
     libmagickwand5 \
+    zip \
+    unzip \
     --no-install-recommends
 
 #bison
@@ -164,7 +166,7 @@ RUN cd /tmp/ \
     && curl -sS https://getcomposer.org/installer | php \
     && mv composer.phar /usr/local/bin/ \
     && ln -s /usr/local/bin/composer.phar /usr/local/bin/composer \
-    && curl -sSLo phpunit.phar https://phar.phpunit.de/phpunit-5.5.4.phar \
+    && curl -sSLo phpunit.phar https://phar.phpunit.de/phpunit-5.7.9.phar \
     && chmod 755 phpunit.phar \
     && mv phpunit.phar /usr/local/bin/phpunit
 
@@ -177,15 +179,15 @@ RUN cd /tmp/ \
     && ./configure --disable-memcached-sasl \
     && make \
     && make install \
-    && bash -c "echo 'extension=/usr/local/lib/php/extensions/no-debug-non-zts-20151012/memcached.so' >> /usr/local/etc/php/conf.d/10-memcached.ini"
+    && bash -c "echo 'extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/memcached.so' >> /usr/local/etc/php/conf.d/10-memcached.ini"
 
 # aerospike
 RUN cd /tmp/ \
-    && composer require --ignore-platform-reqs aerospike/aerospike-client-php "3.4.9" \
+    && composer require --ignore-platform-reqs aerospike/aerospike-client-php "3.4.14" \
     && cd vendor/aerospike/aerospike-client-php/src/aerospike \
     && find . -name "*.sh" -exec chmod +x {} \; \
     && ./build.sh \
-    && cp ./.libs/aerospike.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012/aerospike.so \
+    && cp ./.libs/aerospike.so /usr/local/lib/php/extensions/no-debug-non-zts-20160303/aerospike.so \
     && bash -c "echo 'extension=aerospike.so' >> /usr/local/etc/php/conf.d/20-aerospike.ini" \
     && bash -c "echo 'aerospike.udf.lua_system_path=/usr/local/aerospike/lua' >> /usr/local/etc/php/conf.d/20-aerospike.ini" \
     && bash -c "echo 'aerospike.udf.lua_user_path=/usr/local/aerospike/usr-lua' >> /usr/local/etc/php/conf.d/20-aerospike.ini"
@@ -207,14 +209,14 @@ RUN cd /tmp/ \
 
 #xdebug
 RUN cd /tmp/ \
-    && wget https://xdebug.org/files/xdebug-2.4.1.tgz \
-    && tar -xvzf xdebug-2.4.1.tgz \
-    && cd xdebug-2.4.1/ \
+    && wget https://xdebug.org/files/xdebug-2.5.0.tgz \
+    && tar -xvzf xdebug-2.5.0.tgz \
+    && cd xdebug-2.5.0/ \
     && phpize \
     && ./configure \
     && make \
-    && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20151012 \
-    && bash -c "echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20121212/xdebug.so' >> /usr/local/etc/php/conf.d/60-xdebug.ini"
+    && cp modules/xdebug.so /usr/local/lib/php/extensions/no-debug-non-zts-20160303 \
+    && bash -c "echo 'zend_extension=/usr/local/lib/php/extensions/no-debug-non-zts-20160303/xdebug.so' >> /usr/local/etc/php/conf.d/60-xdebug.ini"
 
 # default vhost
 COPY extras/apache/000-default.conf /etc/apache2/sites-enabled/000-default.conf

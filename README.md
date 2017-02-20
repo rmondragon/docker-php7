@@ -7,9 +7,9 @@ Basic packages
 - Apache
 - PHP 7.0.10
     - Extensions
-        - Geoip 
-        - Aerospike 
-        - Memcached 
+        - Geoip
+        - Aerospike
+        - Memcached
         - Imagick
         - Xdebug
 
@@ -24,13 +24,13 @@ docker build -t rmondragon/php7 .
 * The following will run `rmondragon/php7` default setup though port 8080. To check phpinfo, browse http://localhost:8080/phpinfo.php
 
 ```
-docker run -d -p 8080:80 --name <CONTAINER_NAME> rmondragon/php7
+docker run -d -p 8080:80 --name <CONTAINER_NAME> rmondragon/php7:1.2
 ```
 
 * To mount your local php project, and it will start in <PATH>/htdocs
 
 ```
-docker run -d -p 8080:80 -v <PATH>:/var/www --name php7 rmondragon/php7
+docker run -d -p 8080:80 -v <PATH>:/var/www --name php7 rmondragon/php7:1.2
 ```
 
 
